@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Readings</title>
+    <script>
+        function updateReadings() {
+            fetch('/get_data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("conductivity").innerText = data.conductivity + " µS/cm";
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        setInterval(updateReadings, 3000); // Update every 3 seconds
+    </script>
+</head>
+<body onload="updateReadings()">
+    <h1>Sensor Readings</h1>
+    <p><strong>Electrical Conductivity:</strong> <span id="conductivity"></span></p>
+</body>
+</html>
+

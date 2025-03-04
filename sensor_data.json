@@ -1,0 +1,67 @@
+[
+    {
+        "timestamp": "2025-02-28T02:39:39.432044",
+        "Temperature": 23.676,
+        "Pump_pH_low": 0.0,
+        "Pump_pH_high": 0.0,
+        "Pump_nutr1": 0.0,
+        "Pump_nutr2": 0.0
+    },
+    {
+        "timestamp": "2025-02-28T03:00:54.281364",
+        "Temperature": 254.0,
+        "Pump_pH_low": 255.0,
+        "Pump_pH_high": 0.0,
+        "Pump_nutr2": 0.0
+    },
+    {
+        "timestamp": "2025-03-03T18:58:31.358610",
+        "99": 11.465,
+        "EC": 0.0,
+        "Temperature": null,
+        "Pump_pH_low": 0.0,
+        "Pump_pH_high": 1.0,
+        "Pump_nutr1": 0.0,
+        "Pump_nutr2": 0.0
+    },
+    {
+        "timestamp": "2025-03-03T18:59:36.136392",
+        "99": 11.511,
+        "EC": 0.0,
+        "Temperature": null,
+        "Pump_pH_low": 0.0,
+        "Pump_pH_high": 1.0,
+        "Pump_nutr1": 0.0,
+        "Pump_nutr2": 0.0
+    },
+    {
+        "timestamp": "2025-03-03T19:01:19.860968",
+        "99": 11.574,
+        "EC": 0.0,
+        "Temperature": null,
+        "Pump_pH_low": 0.0,
+        "Pump_pH_high": 1.0,
+        "Pump_nutr1": 0.0,
+        "Pump_nutr2": 0.0
+    },
+    {
+        "timestamp": "2025-03-04T19:35:34.773336",
+        "99": 12.036,
+        "EC": 0.0,
+        "Temperature": null,
+        "Pump_pH_low": 1.0,
+        "Pump_pH_high": 1.0,
+        "Pump_nutr1": 1.0,
+        "Pump_nutr2": 1.0
+    },
+    {
+        "timestamp": "2025-03-04T19:39:37.312642",
+        "99": 12.034,
+        "EC": 0.0,
+        "Temperature": null,
+        "Pump_pH_low": 1.0,
+        "Pump_pH_high": 1.0,
+        "Pump_nutr1": 1.0,
+        "Pump_nutr2": 1.0
+    }
+]

@@ -102,13 +102,12 @@ def run_pumps():
     """Activate each pump to dispense 1 mL every 10 seconds."""
     device = AtlasI2C()
     while True:
-        # for pump_name, address in PUMP_ADDRESSES.items():
-        #     device.set_i2c_address(address)
-        #     device.write("d,1")  # Activate pump
-        # time.sleep(60)  # Wait for a minute before running again
-        device.set_i2c_address(104)
-        device.write("d,1")  # Activate pump
-        time.sleep(10)  # Wait for a minute before running again
+        for pump_name, address in PUMP_ADDRESSES.items():
+            device.set_i2c_address(address)
+            device.write("d,1")  # Activate pump
+            time.sleep(5)
+        time.sleep(60)  # Wait for a minute before running again
+
 
 @app.route('/sensor')
 

@@ -32,7 +32,9 @@ def get_devices():
             sensor_info = device.get_device_info().replace("\x00", "").strip()
             sensor_parts = sensor_info.split(",")
             sensor_name = " ".join(sensor_parts)
-            if sensor_name == "102":
+            if sensor_name == "99":
+                sensor_name = "pH"
+            elif sensor_name == "102":
                 sensor_name = "Temperature"
             elif sensor_name == "100":
                 sensor_name = "EC"
@@ -56,12 +58,33 @@ def get_devices():
 
     return device_list
 
+def is_valid_reading(sensor_name, value):
+    """Validate sensor readings based on sensor type.
+    
+    Returns False if the reading is None, equals 255.0,
+    or falls outside of an expected range.
+    """
+    if value is None:
+        return False
+    # Common error code for bad readings
+    if value == 255.0:
+        return False
+
+    # Define acceptable ranges for some sensors (adjust as needed)
+    if sensor_name == "Temperature":
+        return 0 <= value <= 50    # Celsius: adjust to your expected range
+    if sensor_name == "pH":
+        return 0 <= value <= 14    # pH should be between 0 and 14
+    # You can add additional checks for EC or pump readings if necessary
+
+    return True  # For any sensor that doesn't require special handling
+
 def read_sensor_values():
-    """Read sensor values from EZO devices and return a dictionary."""
+    """Read sensor values from EZO devices and return a dictionary with validated data."""
     device_list = get_devices()
     data = {"timestamp": datetime.utcnow().isoformat()}
     device = AtlasI2C()
-
+    time.sleep(5)
     for dev in device_list:
         device.set_i2c_address(dev["address"])
         device.write("R")
@@ -72,8 +95,14 @@ def read_sensor_values():
         device.set_i2c_address(dev["address"])
         raw_response = device.read()
         clean_response = raw_response.replace("\x00", "").strip()
-        sensor_value = clean_response.split(":")[-1].strip()
-        data[dev["name"]] = float(sensor_value) if sensor_value.replace('.', '', 1).isdigit() else None
+        sensor_value_str = clean_response.split(":")[-1].strip()
+        sensor_value = float(sensor_value_str) if sensor_value_str.replace('.', '', 1).isdigit() else None
+
+        # Validate sensor value. If it's invalid, set to None.
+        if not is_valid_reading(dev["name"], sensor_value):
+            sensor_value = None
+
+        data[dev["name"]] = sensor_value
 
     return data
 
@@ -101,22 +130,48 @@ def save_sensor_data():
 def run_pumps():
     """Activate each pump to dispense 1 mL every 10 seconds."""
     device = AtlasI2C()
+    time.sleep(5)
     while True:
-        for pump_name, address in PUMP_ADDRESSES.items():
-            device.set_i2c_address(address)
-            device.write("d,1")  # Activate pump
-            time.sleep(5)
-        time.sleep(60)  # Wait for a minute before running again
+        # write if statements and dispense certain values for each pump 
+        # 103: base B (nutrients)
+        # 104: pH down solution (acid)
+        # 105: base A (nutrients)
+        # 106: pH up solution (basic)
+        sensor_data = read_sensor_values()
+        pH = sensor_data.get("pH")
+        ec = sensor_data.get("EC")
+        print(pH)
+        print(ec)
+        if pH is not None:
+            print("here!")
+            if pH < 5.5:
+                print("shouild be here")
+                device.set_i2c_address(106)
+                device.write("d,2")  # Dispense 1 mL of pH up solution
+                time.sleep(5)
+            elif pH > 6.5:
+                device.set_i2c_address(104)
+                device.write("d,2")  # Dispense 1 mL of pH down solution
+                time.sleep(5)
+        if ec is not None:
+            if ec < 1200:
+                device.set_i2c_address(103)
+                device.write("d,1")  # Dispense 1 mL of nutrient solution A
+                time.sleep(5)
+                device.set_i2c_address(105)
+                device.write("d,1")  # Dispense 1 mL of nutrient solution A
+                time.sleep(5)
+        time.sleep(1800)  # Wait for a minute before running again
 
 
-@app.route('/sensor')
+# @app.route('/sensor')
 
-@app.route('/sensor')
+@app.route('/api/sensor')
 def get_sensor_data():
     """Returns the latest sensor readings."""
     return jsonify(read_sensor_values())
 
-@app.route('/history/24h')
+@app.route('/api/history/24h')
 def get_last_24h():
     """Returns the last 24 hours of sensor data."""
     if not os.path.exists(DATA_FILE):
@@ -130,7 +185,18 @@ def get_last_24h():
     
     return jsonify(last_24h_data)
 
-@app.route('/history/7d_avg')
+@app.route('/api/history/all')
+def get_all_data():
+    """Returns all sensor data recorded in the JSON file."""
+    if not os.path.exists(DATA_FILE):
+        return jsonify({"error": "No data available"}), 404
+
+    with open(DATA_FILE, "r") as f:
+        data_log = json.load(f)
+    return jsonify(data_log)
+
+
+@app.route('/api/history/7d_avg')
 def get_7d_average():
     """Returns the daily average of sensor values for the last 7 days."""
     if not os.path.exists(DATA_FILE):
@@ -171,81 +237,3 @@ if __name__ == '__main__':
     threading.Thread(target=run_pumps, daemon=True).start()
     threading.Thread(target=data_collector, daemon=True).start()
     app.run(host='0.0.0.0', port=5000)
-
-# from flask import Flask, jsonify
-# import time
-# from AtlasI2C import AtlasI2C
-
-# app = Flask(__name__)
-
-# def get_devices():
-#     """Scan for EZO devices and return a list of detected sensors."""
-#     device = AtlasI2C()
-#     device_address_list = device.list_i2c_devices()
-#     device_list = []
-
-#     for i in device_address_list:
-#         device.set_i2c_address(i)
-
-#         # Get module type and sensor name, ensuring they are cleaned
-#         response = device.query("I")
-#         try:
-#             moduletype = response.split(",")[1].strip()
-            
-#             # ✅ Get full device name (E.g., "RTD,102")
-#             sensor_info = device.get_device_info().replace("\x00", "").strip()
-
-#             # ✅ Extract the full name correctly
-#             sensor_parts = sensor_info.split(",")  # ["RTD", "102"]
-#             sensor_name = " ".join(sensor_parts)  # Convert to "RTD 102"
-#             if sensor_name == "102":
-#                 sensor_name = "Temperature"
-#             elif sensor_name == "100":
-#                 sensor_name = "EC"
-#             elif sensor_name == "99":
-#                 sensor_name = "pH"
-
-#         except IndexError:
-#             print(f">> WARNING: Device at I2C address {i} is not an EZO device and will not be queried.")
-#             continue
-
-#         device_list.append({
-#             "address": i,
-#             "moduletype": moduletype,
-#             "name": sensor_name  # ✅ Now correctly formatted
-#         })
-
-#     return device_list  # Return list of properly formatted device names
-
-# @app.route('/sensor')
-# def get_sensor_data():
-#     """Read sensor values from EZO devices and return as JSON."""
-#     device_list = get_devices()
-#     data = {}
-
-#     # Initialize AtlasI2C device separately
-#     device = AtlasI2C()
-
-#     for dev in device_list:
-#         device.set_i2c_address(dev["address"])
-#         device.write("R")  # Request reading
-
-#     time.sleep(1)  # Delay to allow measurement
-
-#     for dev in device_list:
-#         device.set_i2c_address(dev["address"])
-#         raw_response = device.read()
-
-#         # ✅ Clean the response: remove null bytes and whitespace
-#         clean_response = raw_response.replace("\x00", "").strip()
-
-#         # ✅ Extract only the numerical reading (e.g., "25.043")
-#         sensor_value = clean_response.split(":")[-1].strip()
-
-#         # ✅ Store properly formatted name and value
-#         data[dev["name"]] = sensor_value
-
-#     return jsonify(data)  # Send JSON response
-
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5000)

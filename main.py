@@ -17,6 +17,12 @@ PUMP_ADDRESSES = {
     "Pump_nutr2": 106
 }
 
+IDEAL_VALUES = {
+    "low_pH": float(input("Enter the low pH threshold: ")),
+    "high_pH": float(input("Enter the high pH threshold: ")),
+    "low_EC": float(input("Enter the low EC threshold: "))
+}
+
 def get_devices():
     """Scan for EZO devices and return a list of detected sensors."""
     device = AtlasI2C()
@@ -67,7 +73,7 @@ def is_valid_reading(sensor_name, value):
     if value is None:
         return False
     # Common error code for bad readings
-    if value == 255.0:
+    if value <= 255.0:
         return False
 
     # Define acceptable ranges for some sensors (adjust as needed)
@@ -144,17 +150,20 @@ def run_pumps():
         print(ec)
         if pH is not None:
             print("here!")
-            if pH < 5.5:
-                print("shouild be here")
+            if pH < IDEAL_VALUES["low_pH"]:
+                print("(pH) 106, dispensing 2")
                 device.set_i2c_address(106)
                 device.write("d,2")  # Dispense 1 mL of pH up solution
                 time.sleep(5)
-            elif pH > 6.5:
+            elif pH > IDEAL_VALUES["high_pH"]:
+                print("(pH) 104, dispensing 2")
                 device.set_i2c_address(104)
                 device.write("d,2")  # Dispense 1 mL of pH down solution
                 time.sleep(5)
         if ec is not None:
-            if ec < 1200:
+            if ec < IDEAL_VALUES["low_EC"] and ec > 1000:
+                print("(EC) 103, dispensing 1")
+                print("(EC) 105, dispensing 1")
                 device.set_i2c_address(103)
                 device.write("d,1")  # Dispense 1 mL of nutrient solution A
                 time.sleep(5)

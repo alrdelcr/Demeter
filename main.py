@@ -73,9 +73,10 @@ def is_valid_reading(sensor_name, value):
     if value is None:
         return False
     # Common error code for bad readings
-    if value <= 255.0:
+    if value <= 300.0 and sensor_name == "EC":
         return False
-
+    if value == 255.0 and sensor_name != "EC":
+        return False
     # Define acceptable ranges for some sensors (adjust as needed)
     if sensor_name == "Temperature":
         return 0 <= value <= 50    # Celsius: adjust to your expected range

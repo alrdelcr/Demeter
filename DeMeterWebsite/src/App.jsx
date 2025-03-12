@@ -3,6 +3,7 @@ import SensorGraph from "./components/SensorGraph";
 import AllTimeGraph from "./components/AllTimeGraph";
 import { Card, CardContent } from "./components/ui/Card";
 import "tailwindcss";
+import SidebarInput from "./components/SidebarInput";
 
 const getPhColorClass = (pH) => {
   const numericPh = parseFloat(pH);
@@ -81,6 +82,9 @@ const DeviceHub = () => {
 
   return (
     <div className="p-8 flex flex-col items-center min-h-screen bg-gray-100 space-y-8">
+      {/* <div className="h-screen w-full bg-gray-100"> */}
+      <SidebarInput />
+      {/* </div> */}
       {/* Connection Status */}
       <div
         className={`px-6 py-3 rounded-lg text-lg font-semibold shadow-md ${
@@ -180,191 +184,3 @@ const DeviceHub = () => {
 };
 
 export default DeviceHub;
-
-// import React, { useState, useEffect } from "react";
-// import { Card, CardContent } from "./components/ui/card";
-// import "tailwindcss";
-// import SensorGraph from "./components/SensorGraph";
-
-// const DeviceHub = () => {
-//   const [data, setData] = useState({ temperature: 0, pH: 0, ec: 0 });
-//   const [isConnected, setIsConnected] = useState(true);
-//   const [history24h, setHistory24h] = useState([]);
-//   const [history7d, setHistory7d] = useState([]);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         // Fetch real-time sensor data
-//         const sensorResponse = await fetch("/sensor");
-//         if (!sensorResponse.ok) throw new Error("Failed to fetch sensor data");
-//         const sensorData = await sensorResponse.json();
-
-//         setData({
-//           temperature: sensorData.Temperature,
-//           pH: sensorData.pH,
-//           ec: sensorData.EC,
-//         });
-//         setIsConnected(true);
-
-//         // Fetch 24-hour historical data
-//         const history24hResponse = await fetch("/history/24h");
-//         if (!history24hResponse.ok)
-//           throw new Error("Failed to fetch 24h history");
-//         const history24hData = await history24hResponse.json();
-//         setHistory24h(history24hData);
-
-//         // Fetch 7-day average data
-//         const history7dResponse = await fetch("/history/7d_avg");
-//         if (!history7dResponse.ok)
-//           throw new Error("Failed to fetch 7d average history");
-//         const history7dData = await history7dResponse.json();
-//         setHistory7d(history7dData);
-//       } catch (error) {
-//         console.error("Error fetching data:", error);
-//         setIsConnected(false);
-//       }
-//     };
-
-//     fetchData();
-//     const interval = setInterval(fetchData, 60000); // Refresh every minute
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   return (
-//     <div className="p-8 flex flex-col items-center justify-start min-h-screen bg-gray-100">
-//       {/* Connection Status */}
-//       <div
-//         className={`mb-6 px-4 py-2 rounded-lg text-lg font-semibold ${
-//           isConnected
-//             ? "bg-green-200 text-green-800"
-//             : "bg-red-200 text-red-800"
-//         }`}
-//       >
-//         {isConnected ? "Connected to Demeter ✅" : "Disconnected ❌"}
-//       </div>
-
-//       {/* Sensor Data Cards */}
-//       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-//         <Card className="bg-blue-500 text-black shadow-lg rounded-2xl">
-//           <CardContent className="p-6 text-center">
-//             <h2 className="text-2xl font-bold">Temperature</h2>
-//             <p className="text-3xl font-semibold">{data.temperature} °C</p>
-//           </CardContent>
-//         </Card>
-//         <Card className="bg-green-500 text-black shadow-lg rounded-2xl">
-//           <CardContent className="p-6 text-center">
-//             <h2 className="text-2xl font-bold">pH Level</h2>
-//             <p className="text-3xl font-semibold">{data.pH} pH</p>
-//           </CardContent>
-//         </Card>
-//         <Card className="bg-purple-500 text-black shadow-lg rounded-2xl">
-//           <CardContent className="p-6 text-center">
-//             <h2 className="text-2xl font-bold">EC Level</h2>
-//             <p className="text-3xl font-semibold">{data.ec} mS/cm</p>
-//           </CardContent>
-//         </Card>
-//       </div>
-
-//       {/* Graphs */}
-//       <div className="p-8 flex flex-col items-center bg-gray-100 min-h-screen space-y-8">
-//         <SensorGraph
-//           title="Last 24 Hours Sensor Data"
-//           unit="°C / pH / mS/cm"
-//           data={history24h}
-//         />
-//         <SensorGraph
-//           title="7-Day Average Sensor Data"
-//           unit="°C / pH / mS/cm"
-//           data={history7d}
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default DeviceHub;
-
-// // import React, { useState, useEffect } from "react";
-// // import { Card, CardContent } from "./components/ui/card";
-// // import "tailwindcss";
-// // import SensorGraph from "./components/SensorGraph";
-
-// // const DeviceHub = () => {
-// //   const [data, setData] = useState({ temperature: 0, pH: 0, ec: 0 });
-// //   const [isConnected, setIsConnected] = useState(true);
-
-// //   useEffect(() => {
-// //     const fetchData = async () => {
-// //       try {
-// //         const response = await fetch("/sensor"); // Proxy to Pi
-// //         if (!response.ok) throw new Error("Network response was not ok");
-// //         const sensorData = await response.json();
-// //         setData({
-// //           temperature: sensorData.Temperature,
-// //           pH: (Math.random() * 2 + 5).toFixed(2), // Placeholder
-// //           ec: sensorData.EC,
-// //         });
-// //         setIsConnected(true); // Connection successful
-// //       } catch (error) {
-// //         console.error("Error fetching sensor data:", error);
-// //         setIsConnected(false); // Connection failed
-// //       }
-// //     };
-
-// //     fetchData();
-// //     const interval = setInterval(fetchData, 5000);
-// //     return () => clearInterval(interval);
-// //   }, []);
-
-// //   return (
-// //     <div className="p-8 flex flex-col items-center justify-start min-h-screen bg-gray-100">
-// //       {/* Connection Status */}
-// //       <div
-// //         className={`mb-6 px-4 py-2 rounded-lg text-lg font-semibold ${
-// //           isConnected
-// //             ? "bg-green-200 text-green-800"
-// //             : "bg-red-200 text-red-800"
-// //         }`}
-// //       >
-// //         {isConnected ? "Connected to Demeter ✅" : "Disconnected ❌"}
-// //       </div>
-
-// //       {/* Sensor Data */}
-// //       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-// //         <Card className="bg-blue-500 text-black shadow-lg rounded-2xl">
-// //           <CardContent className="p-6 text-center">
-// //             <h2 className="text-2xl font-bold">Temperature</h2>
-// //             <p className="text-3xl font-semibold">{data.temperature} °C</p>
-// //           </CardContent>
-// //         </Card>
-// //         <Card className="bg-green-500 text-black shadow-lg rounded-2xl">
-// //           <CardContent className="p-6 text-center">
-// //             <h2 className="text-2xl font-bold">pH Level</h2>
-// //             <p className="text-3xl font-semibold">{data.pH}</p>
-// //           </CardContent>
-// //         </Card>
-// //         <Card className="bg-purple-500 text-black shadow-lg rounded-2xl">
-// //           <CardContent className="p-6 text-center">
-// //             <h2 className="text-2xl font-bold">EC Level</h2>
-// //             <p className="text-3xl font-semibold">{data.ec} mS/cm</p>
-// //           </CardContent>
-// //         </Card>
-// //       </div>
-// //       <div className="p-8 flex flex-col items-center bg-gray-100 min-h-screen space-y-8">
-// //         <SensorGraph
-// //           endpoint="/history/24h"
-// //           title="Last 24 Hours Sensor Data"
-// //           unit="°C / pH / mS/cm"
-// //         />
-// //         <SensorGraph
-// //           endpoint="/history/7d_avg"
-// //           title="7-Day Average Sensor Data"
-// //           unit="°C / pH / mS/cm"
-// //         />
-// //       </div>
-// //     </div>
-// //   );
-// // };
-
-// // export default DeviceHub;

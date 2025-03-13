@@ -117,12 +117,12 @@ export default function SidebarInput() {
 
             <div>
               <label className="block text-lg mb-2">
-                EC High (max nutrient conc.)
+                EC Low (min. nutrient conc.)
               </label>
               <input
                 type="text"
                 className="w-full p-3 text-black rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Recommended: 1800"
+                placeholder="Recommended: 1200"
                 value={ecHigh}
                 onChange={(e) => {
                   setEcHigh(e.target.value);
@@ -153,65 +153,3 @@ export default function SidebarInput() {
     </div>
   );
 }
-
-// import { useState } from "react";
-// import { motion } from "framer-motion";
-
-// export default function SidebarInput() {
-//   const [isOpen, setIsOpen] = useState(false);
-
-//   return (
-//     <div className="fixed top-0 left-0 z-50">
-//       {/* Toggle button */}
-//       <button
-//         className="absolute top-4 left-4 bg-green-400 text-white px-6 py-3 rounded-full z-60 whitespace-nowrap text-lg font-semibold transition-transform duration-300 hover:scale-105"
-//         onClick={() => setIsOpen(!isOpen)}
-//       >
-//         {isOpen ? "Close Panel" : "Open Panel"}
-//       </button>
-
-//       <motion.div
-//         initial={{ x: "-100%" }}
-//         animate={{ x: isOpen ? 0 : "-100%" }}
-//         transition={{ duration: 0.3 }}
-//         className="fixed top-0 left-0 h-full w-80 bg-green-500 text-white p-6 shadow-lg rounded-l-lg"
-//       >
-//         <div className="mt-16">
-//           <h2 className="text-2xl font-bold mb-6">Change Target Values</h2>
-
-//           {/* Form Inputs */}
-//           <div className="space-y-4">
-//             <div>
-//               <label className="block text-lg mb-2">pH Low</label>
-//               <input
-//                 className="w-full p-3 text-black rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//                 placeholder="Recommended: 5.5"
-//               />
-//             </div>
-
-//             <div>
-//               <label className="block text-lg mb-2">pH High</label>
-//               <input
-//                 className="w-full p-3 text-black rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//                 placeholder="Recommended: 6.4"
-//               />
-//             </div>
-
-//             <div>
-//               <label className="block text-lg mb-2">
-//                 EC High (max nutrient conc.)
-//               </label>
-//               <input
-//                 className="w-full p-3 text-black rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//                 placeholder="Recommended: 1800"
-//               />
-//             </div>
-//             <button className="bg-green-400 text-white px-6 py-3 rounded-full z-60 whitespace-nowrap text-lg font-semibold transition-transform duration-300 hover:scale-105">
-//               Send to Device
-//             </button>
-//           </div>
-//         </div>
-//       </motion.div>
-//     </div>
-//   );
-// }

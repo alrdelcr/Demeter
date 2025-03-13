@@ -1,4 +1,6 @@
 # Demeter
+
+## Project Objectives
 DeMeter, named after the Greek goddess of agriculture and fertility (also doubling as ”The Meter”),
 is an intelligent hydroponic system designed to be self-nourishing, nutrient-tracking, and user-observable
 through a web-app portal where users can monitor plant growth. It is designed for ease of use, targeting

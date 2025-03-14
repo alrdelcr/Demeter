@@ -14,3 +14,37 @@ pH-down, and nutrient solutions as needed. Sensor data is continuously logged an
 interactive graphs, allowing users to track environmental changes. Unlike static automation, our system
 enables users to set and adjust ideal values for pH and EC thresholds directly through the web interface,
 ensuring adaptability for different plant types and growing conditions.
+
+## Running the System and Website
+
+### Running the Flask API and System
+To start the Flask API and the overall hydroponic system:
+1. **Navigate to the Raspberry Pi folder:**
+   ```bash
+   cd Raspberry-Pi
+   ```
+2. **Run the main script:**
+   ```bash
+   python3 main.py
+   ```
+
+### Running the Website
+To run the web interface locally:
+1. **Navigate to the DeMeterWebsite folder:**
+   ```bash
+   cd DeMeterWebsite
+   ```
+2. **Install dependencies:**
+   ```bash
+   npm i
+   ```
+3. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+4. Follow the **localhost link** provided in the terminal to access the website.
+
+### Important Notes
+- Ensure all required **JavaScript packages** are installed before running the website.
+- The Raspberry Pi and the web application **must be connected to the same WiFi network** to allow communication and data retrieval from the sensors.
+
